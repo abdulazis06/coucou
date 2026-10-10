@@ -1,3 +1,17 @@
+> [!IMPORTANT]
+> **Unofficial Windows modification based on Coucou 0.2.0.**
+>
+> This branch adds Windows Dark Frosted appearance, multi-agent Auto-Launch,
+> configurable Auto-Quit, and improvements to agent monitoring.
+>
+> See the [fork overview, screenshots, supported agents, and known limitations](../README.md#coucou-windows--dark-frosted--agent-lifecycle-modifications).
+>
+> **The installer links below point to official upstream releases, not this modified build.**
+>
+> Original project: [Louis-CFM/coucou](https://github.com/Louis-CFM/coucou).
+
+---
+
 <div align="center">
 
 <img src="src-tauri/icons/128x128.png" width="96" alt="Coucou icon">
@@ -67,8 +81,8 @@ You can also [build it yourself](#build-it-yourself).
 | `Ctrl+Alt+T` | Brings the session's window forward ("Open terminal") |
 | `Ctrl+Alt+→` / `Ctrl+Alt+←` | Next / previous pill |
 | `Ctrl+Alt+S` | Mutes or unmutes Mochi |
-| `Ctrl+Alt+G` | Opens the wardrobe |
-| `Ctrl+Alt+D` | Sends Mochi to the desktop, or brings him home |
+| `Ctrl+Alt+G` | Sends Mochi to the desktop, or brings him home |
+| `Ctrl+Alt+W` | Opens the wardrobe |
 | `Ctrl+Alt+N` | Opens and closes the island (off until you turn it on) |
 | In the open island: `Ctrl+→` `Ctrl+←`, `Ctrl+1`–`Ctrl+9` | Switch pills |
 | In the open island: `Ctrl+↓` `Ctrl+↑`, `Ctrl+O` | Walk the open GitHub list, open the highlighted row |
@@ -97,8 +111,10 @@ a combination too.
 
 Older Intel graphics drivers rotate the screen on `Ctrl+Alt+←` / `→`; if yours
 still does, those two show up as *In use*. On Linux, Xfce and MATE keep
-`Ctrl+Alt+D` to show the desktop, so there **Send Mochi to the desktop** shows
-up as *In use* until you give it other keys.
+`Ctrl+Alt+D` to show the desktop. The click-through toggle uses that shortcut
+only when selected in Settings; Mochi's desktop shortcut is `Ctrl+Alt+G`.
+`Ctrl+Alt+W` may type `?` on Brazilian ABNT2, so Coucou checks the installed
+keyboard layouts before registering it.
 
 Everything else happens on its own: a Claude Code permission request opens the
 island with **Deny / Allow**, a question from Claude Code shows its options to
@@ -450,7 +466,7 @@ own window.
   chat field `Ctrl+↑` `Ctrl+↓` keep moving the cursor. **Go to alert** brings
   up any agent's waiting card on its own pill; **Toggle the island** folds a
   waiting card rather than dropping it, like `Esc` in the island. **Send Mochi
-  to the desktop** (`Ctrl+Alt+D`, the Mac's `⌃⌥D`)
+  to the desktop** (`Ctrl+Alt+G` on Windows)
   flies him to his spot, or to the bottom-right corner when that spot was on a
   display that is gone; pressed again, he flies home.
 - Weekly recap:

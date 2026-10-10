@@ -22,6 +22,8 @@ async function call<T>(cmd: string, args?: Record<string, unknown>): Promise<T |
   }
 }
 
+export type AccentColor = [number, number, number];
+
 export interface BootInfo {
   settings: Settings;
   /** Logical screen rect of the monitor the island lives on. */
@@ -30,10 +32,13 @@ export interface BootInfo {
   hookPath: string;
   /** False where the OS has no global cursor (Wayland): see Island.followPageCursor. */
   cursorPoll: boolean;
+  clickThrough: boolean;
+  accentColor: AccentColor | null;
 }
 
 export const Bridge = {
   boot: () => call<BootInfo>("boot"),
+  hooksReady: () => call<void>("hooks_ready"),
   /** The system's languages as the webview sees them, for Rust's own texts (i18n.rs). */
   setSystemLanguages: (languages: string[]) => call<void>("set_system_languages", { languages }),
 
@@ -84,6 +89,8 @@ export const Bridge = {
   openFileInVSCode: (path: string) => call<boolean>("open_file_in_vscode", { path }),
 
   quit: () => call<void>("quit_app"),
+  autoQuitConfirm: (ticket: number, busy: boolean, busyReason?: string) =>
+    call<void>("auto_quit_confirm", { ticket, busy, ...(busyReason ? { busyReason } : {}) }),
 
   openSettingsWindow: () => call<void>("open_settings_window"),
 

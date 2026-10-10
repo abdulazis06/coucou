@@ -6,17 +6,25 @@
 // (the recorder in Settings), spots duplicates, and maps the keys pressed
 // inside the open island to what they do.
 //
-// Why Ctrl+Alt+Space / A / T / S / G / ← → rather than the Mac's letters: see
+// Why Ctrl+Alt+Space / A / T / S / ← → rather than the Mac's letters: see
 // the top of src-tauri/src/shortcuts.rs. In short, Windows reads Ctrl+Alt as
 // AltGr, and AltGr+E, Q, M, W, C, the digits and most punctuation type a
 // character on at least one of the French, German, Spanish, Italian,
 // Portuguese or Brazilian layouts (ALTGR_CHARACTERS below).
+// Wardrobe's W default is checked against installed layouts before registration.
 
 // ── Strings shown to the user ─────────────────────────────────────────────────
 // English keys: Settings shows them through `t()` (src/i18n). Key names
 // (Ctrl, Alt, Space…) are never translated.
 
 import { N_ } from "../i18n/i18n";
+import type { ClickThroughShortcut } from "./state";
+
+export const CLICK_THROUGH_TOGGLE = ["clickThroughToggle", "Ctrl+Alt+D"] as const;
+export const CLICK_THROUGH_CHOICES: readonly { value: ClickThroughShortcut; label: string; description: string }[] = [
+  { value: "holdCtrl", label: N_("Hold Ctrl"), description: N_("Hold Ctrl over the island to pass clicks through. Release Ctrl to restore interaction.") },
+  { value: "ctrlAltD", label: "Ctrl + Alt + D", description: N_("Press once to pass clicks through, then press again to restore interaction.") },
+];
 
 export const SHORTCUT_TEXT = {
   toggleIsland: N_("Open or close the island"),
@@ -79,8 +87,8 @@ export const SHORTCUTS: readonly ShortcutDef[] = [
   def("nextPill", "Ctrl+Alt+Right", true, true),
   def("prevPill", "Ctrl+Alt+Left", true, true),
   def("muteToggle", "Ctrl+Alt+S", true, true),
-  def("desktopToggle", "Ctrl+Alt+D", true, true),
-  def("wardrobeToggle", "Ctrl+Alt+G", true, true),
+  def("desktopToggle", "Ctrl+Alt+G", true, true),
+  def("wardrobeToggle", "Ctrl+Alt+W", true, true),
 ];
 
 export interface Binding {
@@ -297,11 +305,13 @@ export function duplicates(entries: Iterable<[string, string]>): Set<string> {
 }
 
 /** The (id, keys) pairs Coucou would register with `stored`. */
-export function activeKeys(stored: Bindings | undefined): [string, string][] {
-  return SHORTCUTS.filter((d) => d.ported)
+export function activeKeys(stored: Bindings | undefined, method: ClickThroughShortcut = "holdCtrl"): [string, string][] {
+  const keys: [string, string][] = SHORTCUTS.filter((d) => d.ported)
     .map((d) => [d.id, effective(d, stored)] as const)
     .filter(([, b]) => b.enabled && b.keys)
     .map(([id, b]) => [id, b.keys]);
+  if (method === "ctrlAltD") keys.unshift([...CLICK_THROUGH_TOGGLE]);
+  return keys;
 }
 
 /**
